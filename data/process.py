@@ -1,7 +1,7 @@
 import scipy.io as io
-from scipy.stats import t
 import numpy as np
 import networkx as nx
+import bct
 from reports import plots
 
 # load pre-processed
@@ -31,48 +31,64 @@ static_alpha_EEG = np.average(alpha_EEG, 2)
 static_beta_EEG = np.average(beta_EEG, 2)
 static_gamma_EEG = np.average(gamma_EEG, 2)
 
-#plots.plot_adjacency_matrix(static_fMRI, "Connectivity", "static_fMRI", True)
 
-# apply a threshold
-confidence = 0.999
-n = 68*68
-m = np.mean(static_fMRI)
-std_dev = np.std(static_fMRI)
-h = (std_dev/(n**0.5)) * t.ppf((1 - confidence) / 2, n-1)
-fmri_threshold_min = m + h
-fmri_threshold_max = m - h
-#print(fmri_threshold_min, fmri_threshold_max)
+# threshold fMRI
+#plots.plot_connectivity_matrix(static_fMRI, "Connectivity", "No threshold", "static_fMRI", False)
+bct.threshold_absolute(static_fMRI, thr=0, copy=False)
+#plots.plot_connectivity_matrix_thresholded(static_fMRI, "Connectivity", "Threshold > 0", "static_fMRI_threshold0", False)
+static_fMRI_unweighted = bct.weight_conversion(static_fMRI, 'binarize', copy=True)
+#plots.plot_connectivity_matrix_binarized(static_fMRI_unweighted, "Unweighted (binarized)", "static_fMRI_unweighted", False)
 
-static_fMRI = (fmri_threshold_min <= static_fMRI) * static_fMRI
-static_fMRI = (static_fMRI <= fmri_threshold_max) * static_fMRI
+# threshold EEGs
+names = ("static_broad_EEG", "static_delta_EEG", "static_theta_EEG", "static_alpha_EEG", "static_beta_EEG", "static_gamma_EEG")
+matrices = [static_broad_EEG, static_delta_EEG, static_theta_EEG, static_alpha_EEG, static_beta_EEG, static_gamma_EEG]
+matrices_unweighted = []
 
-eeg_threshold = 0.03
-static_broad_EEG = (static_broad_EEG >= eeg_threshold) * static_broad_EEG
-static_delta_EEG = (static_delta_EEG >= eeg_threshold) * static_delta_EEG
-static_theta_EEG = (static_theta_EEG >= eeg_threshold) * static_theta_EEG
-static_alpha_EEG = (static_alpha_EEG >= eeg_threshold) * static_alpha_EEG
-static_beta_EEG = (static_beta_EEG >= eeg_threshold) * static_beta_EEG
-static_gamma_EEG = (static_broad_EEG >= eeg_threshold) * static_gamma_EEG
+for i in range(len(names)):
+    #plots.plot_connectivity_matrix(matrices[i], "Connectivity", "No threshold", names[i], False)
+    mean = np.mean(matrices[i])
+    bct.threshold_absolute(matrices[i], thr=0.05, copy=False)
+    #plots.plot_connectivity_matrix_thresholded(matrices[i], "Connectivity", "Threshold > " + ('%.4f' % mean), names[i] + "_threshold_" + ('%.4f' % mean), False)
+    unweighted = bct.weight_conversion(matrices[i], 'binarize', copy=True)
+    matrices_unweighted.append(unweighted)
+    #plots.plot_connectivity_matrix_binarized(unweighted, "Unweighted (binarized)", names[i] + "_unweighted", False)
 
 
-plots.plot_adjacency_matrix(static_fMRI, "Connectivity", "static_fMRI_threshold_99", True)
-
-# create static connectome
 dtype = [("fmri", float), ("broad", float), ("delta", float), ("theta", float), ("alpha", float), ("beta", float), ("gamma", float)]
-edge_attr = [static_fMRI, static_broad_EEG, static_delta_EEG, static_theta_EEG, static_alpha_EEG, static_beta_EEG, static_gamma_EEG]
+matrices.insert(0, static_fMRI)
+matrices_unweighted.insert(0, static_fMRI_unweighted)
 
-#connectome = nx.from_numpy_array(static_fMRI, create_using=nx.Graph)
+# save adjacency matrices
+mat_file = {}
+for i in range(len(matrices)):
+    mat_file[dtype[i]] = matrices[i]
+io.savemat("processed/static_adjacency_matrices.mat", mat_file)
+mat_file = {}
+for i in range(len(matrices_unweighted)):
+    mat_file[dtype[i]] = matrices_unweighted[i]
+io.savemat("processed/static_unweighted_adjacency_matrices.mat", mat_file)
+
+
+# create static connectomes
+
+# weighted
 static_connectome = nx.Graph()
 for i in range(len(static_fMRI)):
     for j in range(len(static_fMRI[0])):
         args = {'u_of_edge': i, 'v_of_edge': j}
         for attr in range(0, len(dtype)):
-            weight = (edge_attr[attr])[i][j]
+            weight = (matrices[attr])[i][j]
             if weight > 0:
                 args[dtype[attr][0]] = weight
-        static_connectome.add_edge(**args)
+        if len(args) > 2:  # check if some weight was added
+            static_connectome.add_edge(**args)
 
 nx.write_edgelist(static_connectome, "processed/static_connectome.edges", data=True)
+
+# unweighted
+for attr in range(0, len(dtype)):
+    static_connectome_unweighted = nx.Graph(matrices_unweighted[attr])
+    nx.write_edgelist(static_connectome_unweighted, "processed/static_connectome_unweighted_"+ dtype[attr][0] +".edges", data=False)
 
 exit(0)
 
