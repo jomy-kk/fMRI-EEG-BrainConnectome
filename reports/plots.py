@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 
+
+
 def plot_connectivity_matrix(matrix, intensity_name, title, plot_name, show=False):
     plt.clf()
     plt.imshow(matrix, cmap='jet', interpolation='nearest')
