@@ -72,13 +72,13 @@ def write_edgematrix(matrix, file_path, name=""):
 mat_file = {}
 for i in range(len(matrices)):
     mat_file[dtype[i][0]] = matrices[i]
-    write_edgematrix(matrices[i], "processed/static_"+ dtype[i][0] +".edge", dtype[i][0])
-io.savemat("processed/static_adjacency_matrices.mat", mat_file)
+    write_edgematrix(matrices[i], "processed/edgematrix/static_"+ dtype[i][0] +".edge", dtype[i][0])
+io.savemat("processed/matrices/static_adjacency_matrices.mat", mat_file)
 mat_file = {}
 for i in range(len(matrices_unweighted)):
     mat_file[dtype[i][0]] = matrices_unweighted[i]
-    write_edgematrix(matrices_unweighted[i], "processed/static_unweighted_" + dtype[i][0] + ".edge", dtype[i][0])
-io.savemat("processed/static_unweighted_adjacency_matrices.mat", mat_file)
+    write_edgematrix(matrices_unweighted[i], "processed/edgematrix/static_unweighted_" + dtype[i][0] + ".edge", dtype[i][0])
+io.savemat("processed/matrices/static_unweighted_adjacency_matrices.mat", mat_file)
 
 
 # create static connectomes
@@ -95,12 +95,12 @@ for i in range(len(static_fMRI)):
         if len(args) > 2:  # check if some weight was added
             static_connectome.add_edge(**args)
 
-nx.write_edgelist(static_connectome, "processed/static_connectome.edges", data=True)
+nx.write_edgelist(static_connectome, "processed/edgelist/static_connectome.edges", data=True)
 
 # unweighted
 for attr in range(0, len(dtype)):
     static_connectome_unweighted = nx.Graph(matrices_unweighted[attr])
-    nx.write_edgelist(static_connectome_unweighted, "processed/static_connectome_unweighted_"+ dtype[attr][0] +".edges", data=False)
+    nx.write_edgelist(static_connectome_unweighted, "processed/edgelist/static_connectome_unweighted_"+ dtype[attr][0] +".edges", data=False)
 
 exit(0)
 
