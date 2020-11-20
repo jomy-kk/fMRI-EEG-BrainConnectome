@@ -2,8 +2,10 @@ import BrainConnectivityToolboxWrapper as b
 import pandas as pd
 import datetime
 from matplotlib import pyplot as plt
+from DesikanViz import write_desikan
 
 most_recent_stats = None
+
 
 def analyze(graph, name,
             degree_centrality=True,
@@ -12,7 +14,8 @@ def analyze(graph, name,
             weighted_clustering_coeff=True,
             average_path_len=True,
             betweenness_centrality=True,
-            rich_club=True):
+            rich_club=True,
+            desikan_metric=None):
     nodes = [i for i in range(len(graph[0]))]
 
     stats = pd.DataFrame(nodes)
@@ -39,10 +42,16 @@ def analyze(graph, name,
     if rich_club:
         stats = b.RichClubCoefficient(graph, name, stats).compute()
 
+    if desikan_metric:
+        if desikan_metric not in stats:
+            print("The specified metric must be the name of a column of the stats file")
+
+        write_desikan(desikan_metric, name, stats[desikan_metric].to_list())
+
     global most_recent_stats
     most_recent_stats = stats
 
-    stats.to_csv("stats/stats-" + str(datetime.datetime.now()).replace(':', '-'), sep=' ')
+    stats.to_csv("stats/stats-" + name + "-" + str(datetime.datetime.now()).replace(':', '-'), sep=' ')
 
 
 def plot_relation(xaxis_stats_label, yaxis_stats_label):
@@ -52,5 +61,3 @@ def plot_relation(xaxis_stats_label, yaxis_stats_label):
     plt.xlabel(xaxis_stats_label)
     plt.ylabel(yaxis_stats_label)
     plt.show()
-
-

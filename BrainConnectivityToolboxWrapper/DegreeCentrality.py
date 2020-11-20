@@ -1,5 +1,5 @@
 import bct
-from plots import plots
+from reports import plots
 import matplotlib.pyplot as plt
 import statistics
 
@@ -22,7 +22,7 @@ class DegreeCentrality:
         distribution['Probability'] = distribution['Frequency'] / sum
         distribution.head(10)
 
-        alpha = plots.create_plot("plots/" + self.name + "_degree_distribution.pdf", 'Degree' + " distribution",
+        alpha = plots.create_plot("reports/plots/" + self.name + "_degree_distribution.pdf", 'Degree' + " distribution",
                                   'Degree', distribution['Degree'],
                                   "Probability", distribution['Probability'],
                                   yticks=[0, 1],

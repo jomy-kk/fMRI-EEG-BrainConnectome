@@ -1,11 +1,21 @@
-import numpy as np
 import scipy.io as io
 from BrainConnectivityToolboxWrapper.Analyser import analyze, plot_relation
 
 
-input_file = "data/pre-processed/conn_desi_phase_coh_time_fmri.mat"
-M_fMRI = np.delete((io.loadmat(input_file)).get('connFMRI'), np.s_[0:3], 2)
-static_M_fMRI = np.average(M_fMRI, 2)
+##########################################
+# Analyzing the 7 static weighted matrices
+##########################################
 
-analyze(static_M_fMRI, 'fmri')
+input_file = "data/processed/matrices/static_adjacency_matrices.mat"
+names = ['fmri', 'broad', 'delta', 'theta', 'alpha', 'beta', 'gamma']
+
+matrixes = {name: io.loadmat(input_file).get(name) for name in names}
+
+for n in matrixes:
+    print("################")
+    print("Analyzing: " + n)
+    # For example, in this run we are computing all metrics but WCC, printing a desikan template file with node
+    # strength as feature
+    analyze(matrixes[n], n, weighted_clustering_coeff=False, desikan_metric='Strength')
+
 
