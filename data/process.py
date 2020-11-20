@@ -58,14 +58,26 @@ dtype = [("fmri", float), ("broad", float), ("delta", float), ("theta", float), 
 matrices.insert(0, static_fMRI)
 matrices_unweighted.insert(0, static_fMRI_unweighted)
 
+def write_edgematrix(matrix, file_path, name=""):
+    m = "#" + name
+    for i in range(len(matrix)):
+        m += "\n"
+        for j in range(len(matrix[0])):
+            m += str(matrix[i][j]) + "\t"
+    m_ascii = m.encode('ascii')
+    with open(file_path, 'wb') as f:
+        f.write(m_ascii)
+
 # save adjacency matrices
 mat_file = {}
 for i in range(len(matrices)):
-    mat_file[dtype[i]] = matrices[i]
+    mat_file[dtype[i][0]] = matrices[i]
+    write_edgematrix(matrices[i], "processed/static_"+ dtype[i][0] +".edge", dtype[i][0])
 io.savemat("processed/static_adjacency_matrices.mat", mat_file)
 mat_file = {}
 for i in range(len(matrices_unweighted)):
-    mat_file[dtype[i]] = matrices_unweighted[i]
+    mat_file[dtype[i][0]] = matrices_unweighted[i]
+    write_edgematrix(matrices_unweighted[i], "processed/static_unweighted_" + dtype[i][0] + ".edge", dtype[i][0])
 io.savemat("processed/static_unweighted_adjacency_matrices.mat", mat_file)
 
 
