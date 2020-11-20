@@ -33,11 +33,11 @@ static_gamma_EEG = np.average(gamma_EEG, 2)
 
 
 # threshold fMRI
-plots.plot_connectivity_matrix(static_fMRI, "Connectivity", "No threshold", "static_fMRI", False)
+#plots.plot_connectivity_matrix(static_fMRI, "Connectivity", "No threshold", "static_fMRI", False)
 bct.threshold_absolute(static_fMRI, thr=0, copy=False)
-plots.plot_connectivity_matrix_thresholded(static_fMRI, "Connectivity", "Threshold > 0", "static_fMRI_threshold0", False)
+#plots.plot_connectivity_matrix_thresholded(static_fMRI, "Connectivity", "Threshold > 0", "static_fMRI_threshold0", False)
 static_fMRI_unweighted = bct.weight_conversion(static_fMRI, 'binarize', copy=True)
-plots.plot_connectivity_matrix_binarized(static_fMRI_unweighted, "Unweighted (binarized)", "static_fMRI_unweighted", False)
+#plots.plot_connectivity_matrix_binarized(static_fMRI_unweighted, "Unweighted (binarized)", "static_fMRI_unweighted", False)
 
 # threshold EEGs
 names = ("static_broad_EEG", "static_delta_EEG", "static_theta_EEG", "static_alpha_EEG", "static_beta_EEG", "static_gamma_EEG")
@@ -45,13 +45,13 @@ matrices = [static_broad_EEG, static_delta_EEG, static_theta_EEG, static_alpha_E
 matrices_unweighted = []
 
 for i in range(len(names)):
-    plots.plot_connectivity_matrix(matrices[i], "Connectivity", "No threshold", names[i], False)
+    #plots.plot_connectivity_matrix(matrices[i], "Connectivity", "No threshold", names[i], False)
     mean = np.mean(matrices[i])
     bct.threshold_absolute(matrices[i], thr=float(mean), copy=False)
-    plots.plot_connectivity_matrix_thresholded(matrices[i], "Connectivity", "Threshold > " + ('%.4f' % mean), names[i] + "_threshold_" + ('%.4f' % mean), False)
+    #plots.plot_connectivity_matrix_thresholded(matrices[i], "Connectivity", "Threshold > " + ('%.4f' % mean), names[i] + "_threshold_" + ('%.4f' % mean), False)
     unweighted = bct.weight_conversion(matrices[i], 'binarize', copy=True)
     matrices_unweighted.append(unweighted)
-    plots.plot_connectivity_matrix_binarized(unweighted, "Unweighted (binarized)", names[i] + "_unweighted", False)
+    #plots.plot_connectivity_matrix_binarized(unweighted, "Unweighted (binarized)", names[i] + "_unweighted", False)
 
 
 dtype = [("fmri", float), ("broad", float), ("delta", float), ("theta", float), ("alpha", float), ("beta", float), ("gamma", float)]
