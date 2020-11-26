@@ -7,3 +7,4 @@ from .BetweennessCentrality import BetweennessCentrality
 from .RichClubCoeff import RichClubCoefficient
 from .NewmanModularity import NewmanModularity
 from .EdgeBetweennessCentrality import EdgeBetweennessCentrality
+from .DegreeCorrelation import DegreeCorrelation
