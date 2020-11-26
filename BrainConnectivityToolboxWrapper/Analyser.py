@@ -15,7 +15,34 @@ def analyze(graph, name,
             average_path_len=True,
             betweenness_centrality=True,
             rich_club=True,
+            newman_modularity=True,
+            edge_betweenness=True,
             desikan_metric=None):
+
+
+    # Force dependent measures
+    if edge_betweenness:
+        rich_club = True
+
+    if rich_club:
+        #degree centrality is needed for the rich club
+        degree_centrality = True
+
+
+    # Select submatrix
+
+    #LEFT
+    #graph = graph[:34, :34]
+
+    #RIGHT
+    #graph = graph[34:, 34:]
+
+    #INTER HLHR
+    #graph = graph[34:, :34]
+
+
+    # Analyze
+
     nodes = [i for i in range(len(graph[0]))]
 
     stats = pd.DataFrame(nodes)
@@ -40,13 +67,22 @@ def analyze(graph, name,
         stats = b.BetweennessCentrality(graph, name, stats).compute()
 
     if rich_club:
-        stats = b.RichClubCoefficient(graph, name, stats).compute()
+        stats, rich = b.RichClubCoefficient(graph, name, stats).compute()
+
+    if newman_modularity:
+        b.NewmanModularity(graph, name, stats).compute()
+
+    if edge_betweenness:
+        b.EdgeBetweennessCentrality(graph, name, stats, rich).compute()
+
 
     if desikan_metric:
         if desikan_metric not in stats:
             print("The specified metric must be the name of a column of the stats file")
 
         write_desikan(desikan_metric, name, stats[desikan_metric].to_list())
+
+    # Save stats
 
     global most_recent_stats
     most_recent_stats = stats

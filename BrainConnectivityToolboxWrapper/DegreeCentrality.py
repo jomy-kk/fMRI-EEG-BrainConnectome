@@ -25,7 +25,7 @@ class DegreeCentrality:
         alpha = plots.create_plot("reports/plots/" + self.name + "_degree_distribution.pdf", 'Degree' + " distribution",
                                   'Degree', distribution['Degree'],
                                   "Probability", distribution['Probability'],
-                                  yticks=[0, 1],
+                                  yticks=[0, 0.3],
                                   also_log_scale=True, log_yticks=[11e-3, 1e-2, 1],
                                   powerlaw_xmin=1e1, powerlaw_xmax=1e4, xforplaw=self.stats["Degree"].to_list())
 

@@ -2,6 +2,7 @@ import bct
 import numpy as np
 import scipy.io as io
 
+
 import statistics
 
 
@@ -16,12 +17,18 @@ class RichClubCoefficient:
     def compute(self):
         # binarize the matrix 1st and pass the binzared to the unweighed. otherwise, it'll all be 0s
         rc_unweighted = bct.rich_club_bu(self.binarized)[0]
-        rc_weighted = bct.rich_club_wu(self.g)
+        #rc_weighted = bct.rich_club_wu(self.g)
 
-        print("Weighted Rich Club Coeff from deg 0 to deg MAX")
-        print(np.nan_to_num(rc_weighted))
-        print("Unweighted Rich Club Coeff from deg 0 to deg MAX")
-        print(np.nan_to_num(rc_unweighted))
+        print("Unweighted Rich Club Coeff from deg 1 to deg MAX")
+        coeffs = np.nan_to_num(rc_unweighted)
+        print(coeffs)
+        idxs = np.where(coeffs > 0.99)[0] + 1
+        print("Degrees in Rich Club:")
+        print(idxs)
+
+        self.stats['RichClub'] = self.stats.apply(lambda row: True if row.Degree in idxs else False, axis=1)
+
+        return self.stats, idxs
 
 
-        return self.stats
+
