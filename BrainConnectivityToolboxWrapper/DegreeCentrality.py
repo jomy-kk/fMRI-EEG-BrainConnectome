@@ -16,24 +16,28 @@ class DegreeCentrality:
 
         self.stats['Degree'] = [v for v in centrality]
 
+        # Lobe grouping
+        plots.create_bar_lobe_grouped_descending("reports/plots/" + self.name + "_degree_descending.pdf", self.name + " Degree Centrality",
+                                 'Degree', centrality)
+
+        plt.show()
+        '''
         # Degree distribution
         distribution = self.stats.groupby(['Degree']).size().reset_index(name='Frequency')
         sum = distribution['Frequency'].sum()
         distribution['Probability'] = distribution['Frequency'] / sum
         distribution.head(10)
 
-        alpha = plots.create_plot("reports/plots/" + self.name + "_degree_distribution.pdf", 'Degree' + " distribution",
-                                  'Degree', distribution['Degree'],
-                                  "Probability", distribution['Probability'],
-                                  yticks=[0, 1],
-                                  also_log_scale=True, log_yticks=[11e-3, 1e-2, 1],
-                                  powerlaw_xmin=1e1, powerlaw_xmax=1e4, xforplaw=self.stats["Degree"].to_list())
+        alpha = plots.create_bar("reports/plots/" + self.name + "_degree_distribution.pdf", self.name + " Degree Distribution",
+                                 'Degree', distribution['Degree'],
+                                 'Probability', distribution['Probability'],
+                                  yticks=[0, 0.05, 0.1, 0.15])
 
         plt.show()
-
+        '''
         average = statistics.mean(self.stats['Degree'])
 
-        print('Degree distribution gamma= ' + str(alpha) + "\n")
+        #print('Degree distribution gamma= ' + str(alpha) + "\n")
 
         print("Average Degree = " + str(average) + "\n")
 

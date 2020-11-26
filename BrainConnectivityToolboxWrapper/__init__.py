@@ -5,3 +5,4 @@ from .WeightedClusteringCoefficient import WeightedClusteringCoefficient
 from .AveragePathLength import AveragePathLength
 from .BetweennessCentrality import BetweennessCentrality
 from .RichClubCoeff import RichClubCoefficient
+from .DegreeCorrelation import DegreeCorrelation
