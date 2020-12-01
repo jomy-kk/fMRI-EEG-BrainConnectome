@@ -13,7 +13,7 @@ names = ['fmri']
 
 matrixes = {name: io.loadmat(input_file).get(name) for name in names}
 
-'''for n in matrixes:
+for n in matrixes:
     print("################")
     print("Analyzing: " + n)
     # For example, in this run we are computing all metrics but WCC, printing a desikan template file with node
@@ -27,5 +27,5 @@ matrixes = {name: io.loadmat(input_file).get(name) for name in names}
             betweenness_centrality=False,
             newman_modularity=False,
             edge_betweenness=True,
-            rich_club=False)
-'''
+            rich_club=True)
+

@@ -265,3 +265,21 @@ def create_bar_lobe_grouped_descending(path_to_save: str, title: str,
     fig.savefig(path_to_save, bbox_inches='tight',
                 pad_inches=0)
     return
+
+
+def create_box_plot(arg):
+
+    df = pd.read_csv("stats/EDGE-stats-fmri", sep='\t')
+
+
+    rich_subset = df.loc[df['EdgeType'] == 'rich'][arg].to_list()
+    periphery_subset = df.loc[df['EdgeType'] == 'periphery'][arg].to_list()
+    feeder_subset = df.loc[df['EdgeType'] == 'feeder'][arg].to_list()
+
+    data = [rich_subset, periphery_subset, feeder_subset]
+
+    plt.boxplot(data)
+
+    plt.xlabel(['rich', 'periphery', 'feeder'])
+
+    plt.show()

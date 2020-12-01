@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import statistics
 import networkx as nx
 import pandas as pd
+from reports import plots
 
 
 class EdgeBetweennessCentrality:
@@ -29,6 +30,8 @@ class EdgeBetweennessCentrality:
         edge_stats['EdgeType'] = edge_stats.apply(lambda row: get_edge_type(row.Edge1, row.Edge2, self.rich, self.stats['Degree'].to_list()), axis=1)
 
         edge_stats.to_csv("stats/EDGE-stats-fmri", sep='\t')
+
+        plots.create_box_plot('U_EdgeBetweenness')
 
 
 def get_edge_type(x, y, rich, degree):
