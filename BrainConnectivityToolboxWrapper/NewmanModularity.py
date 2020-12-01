@@ -22,10 +22,13 @@ class NewmanModularity:
         communities = bct.community_louvain(self.g)
         print(communities)
         modularity = communities[1]
-
-        print("Community Louvain Algorithm: ")
-        print("#Communities: ", len(np.unique(communities[0])))
+        n_communities = np.max(communities[0])
+        print("\nCommunity Louvain Algorithm: ")
+        print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
+        for i in range(n_communities):
+            print("\nCommunity 1: ", [np.where(communities[0][k] == i, communities[0][k], None) for k in range(68)])
+
 
 
 

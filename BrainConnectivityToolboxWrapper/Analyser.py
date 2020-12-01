@@ -7,17 +7,18 @@ from DesikanViz import write_desikan
 most_recent_stats = None
 
 
-def analyze(graph, name,
+def analyze(graph, graph_binarized, name, show=False,
             degree_centrality=True,
             node_strength=True,
-            clusering_coeff=True,
+            clustering_coeff=True,
             weighted_clustering_coeff=True,
             average_path_len=True,
             betweenness_centrality=True,
             rich_club=True,
             newman_modularity=True,
             edge_betweenness=True,
-            desikan_metric=None):
+            desikan_metric=None,
+            lobe=None):
 
 
     # Force dependent measures
@@ -49,12 +50,12 @@ def analyze(graph, name,
     stats.columns = ['Node']
 
     if degree_centrality:
-        stats = b.DegreeCentrality(graph, name, stats).compute()
+        stats = b.DegreeCentrality(graph, name, stats, lobe, show).compute()
 
     if node_strength:
-        stats = b.NodeStrength(graph, name, stats).compute()
+        stats = b.NodeStrength(graph, name, stats, show).compute()
 
-    if clusering_coeff:
+    if clustering_coeff:
         stats = b.ClusteringCoefficient(graph, name, stats).compute()
 
     if weighted_clustering_coeff:
@@ -70,7 +71,7 @@ def analyze(graph, name,
         stats, rich = b.RichClubCoefficient(graph, name, stats).compute()
 
     if newman_modularity:
-        b.NewmanModularity(graph, name, stats).compute()
+        b.NewmanModularity(graph_binarized, name, stats).compute()
 
     if edge_betweenness:
         b.EdgeBetweennessCentrality(graph, name, stats, rich).compute()
