@@ -1,7 +1,9 @@
 import networkx as nx
 import bct
 import numpy as np
-import itertools
+import pandas as pd
+from collections import OrderedDict
+from cdlib import algorithms
 
 class NewmanModularity:
     def __init__(self, graph, name, stats):
@@ -11,31 +13,81 @@ class NewmanModularity:
 
     def compute(self):
 
-        ### Test
-        #G = nx.from_numpy_matrix(self.g)
-        #comp = self.get_communities_GM(G)
-        #limited = itertools.takewhile(lambda c: len(c) <= 14, comp)
-        #for communities in limited:
-            #print(tuple(sorted(c) for c in communities))
-        #modularity = nx.algorithms.community.quality.modularity(G, communities)
+        template = pd.read_csv("data/lobes.node", " ", header='infer')
 
-        communities = bct.community_louvain(self.g)
-        print(communities)
-        modularity = communities[1]
-        n_communities = np.max(communities[0])
-        print("\nCommunity Louvain Algorithm: ")
+        G = nx.Graph(self.g)
+        result = algorithms.louvain(G)
+        modularity = result.newman_girvan_modularity().score
+        significance = result.significance().score
+        communities = result.to_node_community_map()
+        n_communities = list(communities.values())[-1][0] + 1
+        print("\nLouvain Algorithm: ")
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
-        for i in range(n_communities):
-            print("\nCommunity 1: ", [np.where(communities[0][k] == i, communities[0][k], None) for k in range(68)])
+        print("Significance: ", significance)
+        template['Louvain'] = get_ordered_communities(communities)
+        print("\n")
+
+        G = nx.Graph(self.g)
+        result = algorithms.infomap(G)
+        modularity = result.newman_girvan_modularity().score
+        significance = result.significance().score
+        communities = result.to_node_community_map()
+        n_communities = list(communities.values())[-1][0] + 1
+        print("\nInfomap Algorithm: ")
+        print("#Communities: ", n_communities)
+        print("Modularity: ", modularity)
+        print("Significance: ", significance)
+        template['Infomap'] = get_ordered_communities(communities)
+        print("\n")
+
+        G = nx.Graph(self.g)
+        result = algorithms.spinglass(G)
+        modularity = result.newman_girvan_modularity().score
+        significance = result.significance().score
+        communities = result.to_node_community_map()
+        n_communities = list(communities.values())[-1][0] + 1
+        print("\nSpinglass Algorithm: ")
+        print("#Communities: ", n_communities)
+        print("Modularity: ", modularity)
+        print("Significance: ", significance)
+        template['Spinglass'] = get_ordered_communities(communities)
+        print("\n")
+
+        G = nx.Graph(self.g)
+        result = algorithms.walktrap(G)
+        modularity = result.newman_girvan_modularity().score
+        significance = result.significance().score
+        communities = result.to_node_community_map()
+        n_communities = list(communities.values())[-1][0] + 1
+        print("\nWalktrap Algorithm: ")
+        print("#Communities: ", n_communities)
+        print("Modularity: ", modularity)
+        print("Significance: ", significance)
+        template['Walktrap'] = get_ordered_communities(communities)
+        print("\n")
+
+        G = nx.Graph(self.g)
+        result = algorithms.girvan_newman(G, level=3)
+        modularity = result.newman_girvan_modularity().score
+        significance = result.significance().score
+        communities = result.to_node_community_map()
+        n_communities = list(communities.values())[-1][0] + 1
+        print("\nGirvan Newman: ")
+        print("#Communities: ", n_communities)
+        print("Modularity: ", modularity)
+        print("Significance: ", significance)
+        template['Girvan-Newman'] = get_ordered_communities(communities)
+        print("\n")
+
+        pd.DataFrame.to_csv(template, "Results/Communities/communities.csv", " ")
 
 
 
-
-
-
-
-
-
-
+def get_ordered_communities(communities_dict):
+    lst = list((OrderedDict(sorted(communities_dict.items()))).values())
+    res = []
+    for i in lst:
+        res.append(i[0])
+    return res
 
