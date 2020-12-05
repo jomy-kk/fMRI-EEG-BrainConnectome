@@ -4,21 +4,41 @@ import numpy as np
 import pandas as pd
 from collections import OrderedDict
 from cdlib import algorithms
-from reports.plots import create_communities_table
-import os.path
-import BrainConnectivityToolboxWrapper.DegreeCentrality as DC
 
 class NewmanModularity:
-    def __init__(self, graph, name, stats):
+    def __init__(self, graph, name, stats, algorithm=None):
         self.g = graph
         self.name = name
         self.stats = stats
+        self.algorithm = algorithm
 
     def compute(self):
-        names = ["Louvain", "Infomap", "Spinglass", "Walktrap", "Girvan-Newman"]
-        centrality = bct.degrees_und(self.g)
-        region_names = pd.read_csv("data/lobes.node", " ", header='infer')['RegionName']
+        self.centrality = bct.degrees_und(self.g)
+        self.region_names = pd.read_csv("data/lobes.node", " ", header='infer')['RegionName']
 
+        if str(self.algorithm).lower() == 'all' or self.algorithm is None:
+            self.louvain()
+            self.spinglass()
+            self.walktrap()
+            self.girvan_newman()
+            self.infomap()
+
+        if str(self.algorithm).lower() == 'louvain':
+            self.louvain()
+
+        if str(self.algorithm).lower() == 'spinglass':
+            self.spinglass()
+
+        if str(self.algorithm).lower() == 'walktrap':
+            self.walktrap()
+
+        if str(self.algorithm).lower() == 'girvan_newman':
+            self.girvan_newman()
+
+        if str(self.algorithm).lower() == 'infomap':
+            self.infomap()
+
+    def louvain(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
         saveTo = "Results/Communities/" + self.name + "_louvian_communities.node"
         G = nx.Graph(self.g)
@@ -31,13 +51,14 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        a = get_ordered_communities(communities)
+        a = self.get_ordered_communities(communities)
         template['Louvain'] = a
         print("\n")
-        template['Degree'] = [v for v in centrality]
-        template['RegionName'] = region_names
+        template['Degree'] = [v for v in self.centrality]
+        template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
+    def infomap(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
         saveTo = "Results/Communities/" + self.name + "_infomap_communities.node"
         G = nx.Graph(self.g)
@@ -50,13 +71,14 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        b = get_ordered_communities(communities)
+        b = self.get_ordered_communities(communities)
         template['Infomap'] = b
         print("\n")
-        template['Degree'] = [v for v in centrality]
-        template['RegionName'] = region_names
+        template['Degree'] = [v for v in self.centrality]
+        template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
+    def spinglass(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
         saveTo = "Results/Communities/" + self.name + "_spinglass_communities.node"
         G = nx.Graph(self.g)
@@ -69,13 +91,14 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        c = get_ordered_communities(communities)
+        c = self.get_ordered_communities(communities)
         template['Spinglass'] = c
         print("\n")
-        template['Degree'] = [v for v in centrality]
-        template['RegionName'] = region_names
+        template['Degree'] = [v for v in self.centrality]
+        template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
+    def walktrap(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
         saveTo = "Results/Communities/" + self.name + "_walktrap_communities.node"
         G = nx.Graph(self.g)
@@ -88,13 +111,14 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        d = get_ordered_communities(communities)
+        d = self.get_ordered_communities(communities)
         template['Walktrap'] = d
         print("\n")
-        template['Degree'] = [v for v in centrality]
-        template['RegionName'] = region_names
+        template['Degree'] = [v for v in self.centrality]
+        template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
+    def girvan_newman(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
         saveTo = "Results/Communities/" + self.name + "_girvannewman_communities.node"
         G = nx.Graph(self.g)
@@ -107,20 +131,18 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        e = get_ordered_communities(communities)
+        e = self.get_ordered_communities(communities)
         template['Girvan-Newman'] = e
         print("\n")
-        template['Degree'] = [v for v in centrality]
-        template['RegionName'] = region_names
+        template['Degree'] = [v for v in self.centrality]
+        template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
 
-
-
-def get_ordered_communities(communities_dict):
-    lst = list((OrderedDict(sorted(communities_dict.items()))).values())
-    res = []
-    for i in lst:
-        res.append(i[0])
-    return np.array(res)
+    def get_ordered_communities(self, communities_dict):
+        lst = list((OrderedDict(sorted(communities_dict.items()))).values())
+        res = []
+        for i in lst:
+            res.append(i[0])
+        return np.array(res)
 
