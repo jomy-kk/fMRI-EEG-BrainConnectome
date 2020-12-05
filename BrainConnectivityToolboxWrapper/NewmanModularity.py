@@ -24,19 +24,24 @@ class NewmanModularity:
             self.infomap()
 
         if str(self.algorithm).lower() == 'louvain':
-            self.louvain()
+            communities = self.louvain()
+            return communities
 
         if str(self.algorithm).lower() == 'spinglass':
-            self.spinglass()
+            communities = self.spinglass()
+            return communities
 
         if str(self.algorithm).lower() == 'walktrap':
-            self.walktrap()
+            communities = self.walktrap()
+            return communities
 
         if str(self.algorithm).lower() == 'girvan_newman':
-            self.girvan_newman()
+            communities = self.girvan_newman()
+            return communities
 
         if str(self.algorithm).lower() == 'infomap':
-            self.infomap()
+            communities = self.infomap()
+            return communities
 
     def louvain(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
@@ -57,6 +62,7 @@ class NewmanModularity:
         template['Degree'] = [v for v in self.centrality]
         template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
+        return a
 
     def infomap(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
@@ -77,6 +83,7 @@ class NewmanModularity:
         template['Degree'] = [v for v in self.centrality]
         template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
+        return b
 
     def spinglass(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
@@ -97,6 +104,7 @@ class NewmanModularity:
         template['Degree'] = [v for v in self.centrality]
         template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
+        return c
 
     def walktrap(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
@@ -117,6 +125,7 @@ class NewmanModularity:
         template['Degree'] = [v for v in self.centrality]
         template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
+        return d
 
     def girvan_newman(self):
         template = pd.read_csv("data/communities_template.node", " ", header='infer')
@@ -137,6 +146,7 @@ class NewmanModularity:
         template['Degree'] = [v for v in self.centrality]
         template['RegionName'] = self.region_names
         pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
+        return e
 
 
     def get_ordered_communities(self, communities_dict):

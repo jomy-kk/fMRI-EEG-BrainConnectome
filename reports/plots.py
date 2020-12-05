@@ -57,8 +57,46 @@ def plot_connectivity_matrix_binarized(matrix, title, plot_name, show=False):
 ################## METRICS #######################
 ##################################################
 
-def create_plot(path_to_save: str, title: str, xlabel: str, xdata: list, ylabel: str, ydata: list, xticks:list = None, yticks: list = None, discrete=True,
-                also_log_scale: bool = False, log_yticks: list = None, powerlaw_xmin=None, powerlaw_xmax=None, xforplaw=None):
+def create_plot_communitycolored(path_to_save: str, title: str, xlabel: str, xdata: list, ylabel: str, ydata: list, xticks:list = None, yticks: list = None,
+                                 communities=None):
+
+    fig = plt.figure()
+    fig.set_size_inches(14.0, 14.0)
+    ax = plt.subplot(1, 1, 1)
+
+    colors = ['#FF011D', '#FFB400', '#69BF23', '#00B3CE', '#2E36AD', '#fa007d', '#FF7F00']
+
+    max = np.max(communities) + 1
+
+    communities = np.where(communities == 0, colors[0], communities)
+    for i in range(1, max):
+        communities = np.where(communities == str(i), colors[i], communities)
+
+    print(communities)
+    plt.scatter(xdata, ydata, color=communities)
+
+
+    #plt.title(title + ' (linear scale)' if also_log_scale else '')
+    plt.xlabel(xlabel, fontsize=18)
+    plt.ylabel(ylabel, fontsize=18)
+    ax.set_xscale('linear')
+    ax.set_yscale('linear')
+    if yticks:
+        ax.set_ylim(ymin=yticks[0], ymax=yticks[len(yticks) - 1])
+        ax.set_yticks(yticks)
+    if xticks:
+        ax.set_xlim(xmin=xticks[0], xmax=xticks[len(xticks) - 1])
+        ax.set_xticks(xticks)
+    plt.xticks(fontsize=16)
+    plt.yticks(fontsize=16)
+    plt.grid()
+
+    fig.savefig(path_to_save, bbox_inches='tight', pad_inches=0)
+
+    return
+
+def create_plot_lobecolored(path_to_save: str, title: str, xlabel: str, xdata: list, ylabel: str, ydata: list, xticks:list = None, yticks: list = None, discrete=True,
+                            also_log_scale: bool = False, log_yticks: list = None, powerlaw_xmin=None, powerlaw_xmax=None, xforplaw=None):
 
     template = pd.read_csv("data/lobes.node", " ", header='infer')
     colors = template["Color"].tolist()

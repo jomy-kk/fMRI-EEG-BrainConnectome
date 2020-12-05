@@ -17,6 +17,8 @@ def analyze(graph, graph_binarized, name, show=False,
             rich_club=True,
             newman_modularity=True,
             edge_betweenness=True,
+            participation_coefficient=True,
+            communities_algorithm='all',
             desikan_metric=None,
             lobe=None):
 
@@ -71,10 +73,13 @@ def analyze(graph, graph_binarized, name, show=False,
         stats, rich = b.RichClubCoefficient(graph, name, stats).compute()
 
     if newman_modularity:
-        b.NewmanModularity(graph_binarized, name, stats).compute()
+        b.NewmanModularity(graph_binarized, name, stats, communities_algorithm).compute()
 
     if edge_betweenness:
         b.EdgeBetweennessCentrality(graph, name, stats, rich).compute()
+
+    if participation_coefficient:
+        b.ParticipationCoefficient(graph, name, stats, communities_algorithm).compute()
 
 
     if desikan_metric:

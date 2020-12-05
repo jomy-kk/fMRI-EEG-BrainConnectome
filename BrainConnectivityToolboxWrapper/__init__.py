@@ -8,3 +8,4 @@ from .RichClubCoeff import RichClubCoefficient
 from .NewmanModularity import NewmanModularity
 from .EdgeBetweennessCentrality import EdgeBetweennessCentrality
 from .DegreeCorrelation import DegreeCorrelation
+from .ParicipationCoefficient import ParticipationCoefficient

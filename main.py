@@ -31,9 +31,12 @@ for n in matrixes:
         weighted_clustering_coeff=False,
         average_path_len=False,
         betweenness_centrality=False,
-        newman_modularity=True,
+        newman_modularity=False,
         edge_betweenness=False,
-        rich_club=False)
+        rich_club=False,
+        participation_coefficient=True,
+        communities_algorithm='louvain'
+            )
 
 
 '''for n in matrixes:
