@@ -4,6 +4,9 @@ import numpy as np
 import pandas as pd
 from collections import OrderedDict
 from cdlib import algorithms
+from reports.plots import create_communities_table
+import os.path
+import BrainConnectivityToolboxWrapper.DegreeCentrality as DC
 
 class NewmanModularity:
     def __init__(self, graph, name, stats):
@@ -12,9 +15,12 @@ class NewmanModularity:
         self.stats = stats
 
     def compute(self):
+        names = ["Louvain", "Infomap", "Spinglass", "Walktrap", "Girvan-Newman"]
+        centrality = bct.degrees_und(self.g)
+        region_names = pd.read_csv("data/lobes.node", " ", header='infer')['RegionName']
 
-        template = pd.read_csv("data/lobes.node", " ", header='infer')
-
+        template = pd.read_csv("data/communities_template.node", " ", header='infer')
+        saveTo = "Results/Communities/" + self.name + "_louvian_communities.node"
         G = nx.Graph(self.g)
         result = algorithms.louvain(G)
         modularity = result.newman_girvan_modularity().score
@@ -25,9 +31,15 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        template['Louvain'] = get_ordered_communities(communities)
+        a = get_ordered_communities(communities)
+        template['Louvain'] = a
         print("\n")
+        template['Degree'] = [v for v in centrality]
+        template['RegionName'] = region_names
+        pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
+        template = pd.read_csv("data/communities_template.node", " ", header='infer')
+        saveTo = "Results/Communities/" + self.name + "_infomap_communities.node"
         G = nx.Graph(self.g)
         result = algorithms.infomap(G)
         modularity = result.newman_girvan_modularity().score
@@ -38,9 +50,15 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        template['Infomap'] = get_ordered_communities(communities)
+        b = get_ordered_communities(communities)
+        template['Infomap'] = b
         print("\n")
+        template['Degree'] = [v for v in centrality]
+        template['RegionName'] = region_names
+        pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
+        template = pd.read_csv("data/communities_template.node", " ", header='infer')
+        saveTo = "Results/Communities/" + self.name + "_spinglass_communities.node"
         G = nx.Graph(self.g)
         result = algorithms.spinglass(G)
         modularity = result.newman_girvan_modularity().score
@@ -51,9 +69,15 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        template['Spinglass'] = get_ordered_communities(communities)
+        c = get_ordered_communities(communities)
+        template['Spinglass'] = c
         print("\n")
+        template['Degree'] = [v for v in centrality]
+        template['RegionName'] = region_names
+        pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
+        template = pd.read_csv("data/communities_template.node", " ", header='infer')
+        saveTo = "Results/Communities/" + self.name + "_walktrap_communities.node"
         G = nx.Graph(self.g)
         result = algorithms.walktrap(G)
         modularity = result.newman_girvan_modularity().score
@@ -64,9 +88,15 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        template['Walktrap'] = get_ordered_communities(communities)
+        d = get_ordered_communities(communities)
+        template['Walktrap'] = d
         print("\n")
+        template['Degree'] = [v for v in centrality]
+        template['RegionName'] = region_names
+        pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
+        template = pd.read_csv("data/communities_template.node", " ", header='infer')
+        saveTo = "Results/Communities/" + self.name + "_girvannewman_communities.node"
         G = nx.Graph(self.g)
         result = algorithms.girvan_newman(G, level=3)
         modularity = result.newman_girvan_modularity().score
@@ -77,10 +107,13 @@ class NewmanModularity:
         print("#Communities: ", n_communities)
         print("Modularity: ", modularity)
         print("Significance: ", significance)
-        template['Girvan-Newman'] = get_ordered_communities(communities)
+        e = get_ordered_communities(communities)
+        template['Girvan-Newman'] = e
         print("\n")
+        template['Degree'] = [v for v in centrality]
+        template['RegionName'] = region_names
+        pd.DataFrame.to_csv(template, saveTo, " ", header=False, index=False)
 
-        pd.DataFrame.to_csv(template, "Results/Communities/communities.csv", " ")
 
 
 
@@ -89,5 +122,5 @@ def get_ordered_communities(communities_dict):
     res = []
     for i in lst:
         res.append(i[0])
-    return res
+    return np.array(res)
 

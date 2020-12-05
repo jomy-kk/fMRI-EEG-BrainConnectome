@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import matplotlib as mpl
 import powerlaw
 import pandas as pd
@@ -283,3 +284,26 @@ def create_box_plot(arg):
     plt.xlabel(['rich', 'periphery', 'feeder'])
 
     plt.show()
+
+def create_communities_table(communities_per_algorithm, names):
+    colors = None
+    for i in range(len(communities_per_algorithm)):
+        cols = communities_per_algorithm[i]
+        norm = plt.Normalize(cols.min() - 1, cols.max() + 1)
+        colors_new = plt.cm.cool(norm(cols))
+        if colors is None:
+            colors  = colors_new
+        else:
+            colors = np.concatenate([colors, colors_new], 0)
+        print(colors)
+
+    print(colors)
+    fig = plt.figure(figsize=(5, 2))
+    plt.axis('off')
+    plt.table(np.empty((5,68), str), rowLabels=names, colLabels=list(range(0,68)), loc='center',
+                  cellColours=colors, colWidths=[0.1] * 5)
+
+    plt.title("Communities per algorithm", fontsize=8)
+
+    plt.show()
+    fig.savefig("reports/tables/communities.pdf", bbox_inches='tight', pad_inches=0)
