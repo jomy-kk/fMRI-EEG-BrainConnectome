@@ -52,7 +52,7 @@ def analyze(graph, graph_binarized, name, show=False,
     stats.columns = ['Node']
 
     if degree_centrality:
-        stats = b.DegreeCentrality(graph, name, stats, lobe, show).compute()
+        stats = b.DegreeCentrality(graph, name, stats).compute()
 
     if node_strength:
         stats = b.NodeStrength(graph, name, stats, show).compute()
