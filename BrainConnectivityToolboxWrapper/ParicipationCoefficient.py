@@ -27,7 +27,7 @@ class ParticipationCoefficient:
 
         except Exception:
             print('Divinding communities...')
-            communities = NM(self.g, self.name, self.stats, self.communities_algorithm)
+            communities = NM(self.g, self.name, self.stats, self.communities_algorithm).compute()
             region_names = pd.read_csv("data/lobes.node", " ", header='infer')['RegionName']
 
         participations = bct.participation_coef(self.g, communities, 'undirected')
