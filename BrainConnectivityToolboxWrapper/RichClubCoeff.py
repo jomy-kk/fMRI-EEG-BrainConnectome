@@ -23,10 +23,31 @@ class RichClubCoefficient:
         coeffs = np.nan_to_num(rc_unweighted)
         print(coeffs)
         idxs = np.where(coeffs > 0.99)[0] + 1
+
+        #idxs = []
+        #added = False
+        #for i in range(len(coeffs)):
+            #if added:
+                #idxs.append(i + 1)
+            #if coeffs[i] > 0.99:
+                #idxs.append(i + 1)
+                #added = True
+
         print("Degrees in Rich Club:")
         print(idxs)
 
         self.stats['RichClub'] = self.stats.apply(lambda row: True if row.Degree in idxs else False, axis=1)
+
+        min_deg = idxs[0]
+
+        degs = self.stats['Degree'].to_list()
+
+        c = 0
+        for d in degs:
+            if d >= min_deg:
+                c += 1
+
+        print("Number of nodes in rich club: " + str(c))
 
         return self.stats, idxs
 

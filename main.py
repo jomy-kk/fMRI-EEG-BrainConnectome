@@ -11,14 +11,11 @@ from matplotlib import pyplot as plt
 ##########################################
 
 names = ['fmri', 'broad', 'delta', 'theta', 'alpha', 'beta', 'gamma']
-
 input_file = "data/processed/matrices/static_adjacency_matrices.mat"
 input_file_binarized = "data/processed/matrices/static_unweighted_adjacency_matrices.mat"
 
-
 matrixes = {name: io.loadmat(input_file).get(name) for name in names}
 matrixes_binarized = {name: io.loadmat(input_file).get(name) for name in names}
-
 
 for n in matrixes:
     print("################")
@@ -26,19 +23,18 @@ for n in matrixes:
     # For example, in this run we are computing all metrics but WCC, printing a desikan template file with node
     # strength as feature
     analyze(matrixes[n], matrixes_binarized[n], n,
-        degree_centrality=False,
-        node_strength=False,
-        clustering_coeff=False,
-        weighted_clustering_coeff=False,
-        average_path_len=False,
-        betweenness_centrality=False,
-        newman_modularity=False,
-        edge_betweenness=False,
-        rich_club=False,
-        participation_coefficient=True,
-        communities_algorithm='louvain'
+            degree_centrality=False,
+            node_strength=False,
+            clustering_coeff=False,
+            weighted_clustering_coeff=False,
+            average_path_len=False,
+            betweenness_centrality=False,
+            newman_modularity=False,
+            edge_betweenness=False,
+            rich_club=False,
+            participation_coefficient=True,
+            communities_algorithm='louvain'
             )
-
 
 '''for n in matrixes:
     print(n)

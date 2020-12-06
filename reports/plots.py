@@ -5,8 +5,8 @@ import powerlaw
 import pandas as pd
 from pandas.plotting import register_matplotlib_converters
 from numpy import polyfit
-register_matplotlib_converters()
 
+register_matplotlib_converters()
 
 
 ##################################################
@@ -23,7 +23,7 @@ def plot_connectivity_matrix(matrix, intensity_name, title, plot_name, show=Fals
     cbar.set_label(intensity_name)
     plt.savefig(
         "/Users/jomy/OneDrive - Universidade de Lisboa/9º Semestre/CRC - Ciência das Redes Complexas/project2/reports/plots/matrices/" + plot_name + ".pdf",
-        format='pdf', pad_inches=0,  bbox_inches='tight', dpi=1200)
+        format='pdf', pad_inches=0, bbox_inches='tight', dpi=1200)
     if show: plt.show()
 
 
@@ -37,8 +37,9 @@ def plot_connectivity_matrix_thresholded(matrix, intensity_name, title, plot_nam
     cbar.set_label(intensity_name)
     plt.savefig(
         "/Users/jomy/OneDrive - Universidade de Lisboa/9º Semestre/CRC - Ciência das Redes Complexas/project2/reports/plots/matrices/" + plot_name + ".pdf",
-        format='pdf', pad_inches=0,  bbox_inches='tight', dpi=1200)
+        format='pdf', pad_inches=0, bbox_inches='tight', dpi=1200)
     if show: plt.show()
+
 
 def plot_connectivity_matrix_binarized(matrix, title, plot_name, show=False):
     plt.clf()
@@ -52,19 +53,20 @@ def plot_connectivity_matrix_binarized(matrix, title, plot_name, show=False):
     if show: plt.show()
 
 
-
 ##################################################
 ################## METRICS #######################
 ##################################################
 
-def create_plot_communitycolored(path_to_save: str, title: str, xlabel: str, xdata: list, ylabel: str, ydata: list, xticks:list = None, yticks: list = None,
+def create_plot_communitycolored(path_to_save: str, title: str, xlabel: str, xdata: list, ylabel: str, ydata: list,
+                                 xticks: list = None, yticks: list = None,
                                  communities=None):
-
     fig = plt.figure()
     fig.set_size_inches(6.0, 4.0)
     ax = plt.subplot(1, 1, 1)
-    ax.add_patch(plt.Rectangle(xy=(1, 0), width=2, height=0.4, color=np.array((0.8, 0.8, 0.8, 0.5)), fill=True, zorder=-100))
-    ax.add_patch(plt.Rectangle(xy=(1, 0.6), width=2, height=0.4, color=np.array((0.8, 0.8, 0.8, 0.5)), fill=True, zorder=-100))
+    ax.add_patch(
+        plt.Rectangle(xy=(1, 0), width=2, height=0.4, color=np.array((0.8, 0.8, 0.8, 0.5)), fill=True, zorder=-100))
+    ax.add_patch(
+        plt.Rectangle(xy=(1, 0.6), width=2, height=0.4, color=np.array((0.8, 0.8, 0.8, 0.5)), fill=True, zorder=-100))
 
     colors = ['#FF011D', '#FFB400', '#69BF23', '#00B3CE', '#2E36AD', '#fa007d', '#FF7F00']
 
@@ -75,7 +77,6 @@ def create_plot_communitycolored(path_to_save: str, title: str, xlabel: str, xda
         communities = np.where(communities == str(i), colors[i], communities)
 
     plt.scatter(xdata, ydata, color=communities)
-
 
     plt.title(title, fontsize=16)
     plt.xlabel(xlabel, fontsize=16)
@@ -96,9 +97,11 @@ def create_plot_communitycolored(path_to_save: str, title: str, xlabel: str, xda
 
     return
 
-def create_plot_lobecolored(path_to_save: str, title: str, xlabel: str, xdata: list, ylabel: str, ydata: list, xticks:list = None, yticks: list = None, discrete=True,
-                            also_log_scale: bool = False, log_yticks: list = None, powerlaw_xmin=None, powerlaw_xmax=None, xforplaw=None):
 
+def create_plot_lobecolored(path_to_save: str, title: str, xlabel: str, xdata: list, ylabel: str, ydata: list,
+                            xticks: list = None, yticks: list = None, discrete=True,
+                            also_log_scale: bool = False, log_yticks: list = None, powerlaw_xmin=None,
+                            powerlaw_xmax=None, xforplaw=None):
     template = pd.read_csv("data/lobes.node", " ", header='infer')
     colors = template["Color"].tolist()
     grouped_template = template.groupby('Lobe')  # mergesort is stable, i.e, preserves the original order
@@ -116,9 +119,9 @@ def create_plot_lobecolored(path_to_save: str, title: str, xlabel: str, xdata: l
             sub_xdata.append(xdata[ix])
             sub_ydata.append(ydata[ix])
         m, b = polyfit(sub_xdata, sub_ydata, 1)
-        plt.plot(xdata, m*xdata + b, color=grouped_template.get_group(i)['Color'].tolist()[0], linestyle='--')
+        plt.plot(xdata, m * xdata + b, color=grouped_template.get_group(i)['Color'].tolist()[0], linestyle='--')
 
-    #plt.title(title + ' (linear scale)' if also_log_scale else '')
+    # plt.title(title + ' (linear scale)' if also_log_scale else '')
     plt.xlabel(xlabel, fontsize=18)
     plt.ylabel(ylabel, fontsize=18)
     ax.set_xscale('linear')
@@ -133,45 +136,42 @@ def create_plot_lobecolored(path_to_save: str, title: str, xlabel: str, xdata: l
     plt.yticks(fontsize=16)
     plt.grid()
 
-
     # Plot in log scale
     if also_log_scale:
         ax = plt.subplot(2, 1, 2)
         plt.scatter(xdata, ydata)
-        #plt.title(title + ' (log scale)')
+        # plt.title(title + ' (log scale)')
         plt.xlabel('log(' + xlabel + ')', fontsize=18)
         plt.ylabel('log(' + ylabel + ')', fontsize=18)
         ax.set_xscale('log')
         ax.set_yscale('log')
         if log_yticks:
-            ax.set_ylim(ymin=log_yticks[0], ymax=log_yticks[len(log_yticks)-1])
+            ax.set_ylim(ymin=log_yticks[0], ymax=log_yticks[len(log_yticks) - 1])
             ax.set_yticks(log_yticks)
         ax.get_yaxis().set_major_formatter(mpl.ticker.ScalarFormatter())
         plt.grid()
 
-
         # Plot power law
         if powerlaw_xmin and powerlaw_xmax:
-            fit = powerlaw.Fit(xforplaw , xmin=powerlaw_xmin, xmax=powerlaw_xmax, discrete=discrete)
+            fit = powerlaw.Fit(xforplaw, xmin=powerlaw_xmin, xmax=powerlaw_xmax, discrete=discrete)
         else:
-            fit = powerlaw.Fit(xforplaw , discrete=True)
+            fit = powerlaw.Fit(xforplaw, discrete=True)
 
         fit.power_law.plot_pdf(color='r', linestyle='--', label='fit pdf')
 
-        fig.savefig(path_to_save, bbox_inches = 'tight',
-    pad_inches = 0)
+        fig.savefig(path_to_save, bbox_inches='tight',
+                    pad_inches=0)
         return fit.power_law.alpha
 
-    fig.savefig(path_to_save, bbox_inches = 'tight',
-    pad_inches = 0)
+    fig.savefig(path_to_save, bbox_inches='tight',
+                pad_inches=0)
     return
 
 
 def create_bar(path_to_save: str, title: str,
                xlabel: str, xdata: list,
                ylabel: str, ydata: list,
-               xbins:list = None, yticks: list = None):
-
+               xbins: list = None, yticks: list = None):
     fig = plt.figure()
     fig.set_size_inches(10.0, 7.0)
     ax = plt.subplot(1, 1, 1)
@@ -187,17 +187,17 @@ def create_bar(path_to_save: str, title: str,
     plt.yticks(fontsize=16)
     plt.grid(True, axis='y')
 
-    fig.savefig(path_to_save, bbox_inches = 'tight',
-    pad_inches = 0)
+    fig.savefig(path_to_save, bbox_inches='tight',
+                pad_inches=0)
     return
 
 
 def create_bar_lobe_grouped(path_to_save: str, title: str,
-               ylabel: str, ydata: list,
-               xbins:list = None, yticks: list = None):
-
+                            ylabel: str, ydata: list,
+                            xbins: list = None, yticks: list = None):
     template = pd.read_csv("data/lobes.node", " ", header='infer')
-    sorted_template = template.sort_values('Lobe',kind='mergesort') # mergesort is stable, i.e, preserves the original order
+    sorted_template = template.sort_values('Lobe',
+                                           kind='mergesort')  # mergesort is stable, i.e, preserves the original order
     colors = sorted_template["Color"].tolist()
     rois = sorted_template["RegionName"].tolist()
 
@@ -228,11 +228,11 @@ def create_bar_lobe_grouped(path_to_save: str, title: str,
 
 
 def create_bar_hemisphere_grouped(path_to_save: str, title: str,
-               ylabel: str, ydata: list,
-               xbins:list = None, yticks: list = None):
-
+                                  ylabel: str, ydata: list,
+                                  xbins: list = None, yticks: list = None):
     template = pd.read_csv("data/lobes.node", " ", header='infer')
-    sorted_template_left = template[0:34].sort_values('Lobe',kind='mergesort') # mergesort is stable, i.e, preserves the original order
+    sorted_template_left = template[0:34].sort_values('Lobe',
+                                                      kind='mergesort')  # mergesort is stable, i.e, preserves the original order
     sorted_template_right = template[34:69].sort_values('Lobe', kind='mergesort')
     colors = sorted_template_left["Color"].tolist() + sorted_template_right["Color"].tolist()
     rois = sorted_template_left["RegionName"].tolist() + sorted_template_right["RegionName"].tolist()
@@ -264,10 +264,10 @@ def create_bar_hemisphere_grouped(path_to_save: str, title: str,
                 pad_inches=0)
     return
 
-def create_bar_lobe_grouped_descending(path_to_save: str, title: str,
-               ylabel: str, ydata: list,
-               xbins:list = None, yticks: list = None):
 
+def create_bar_lobe_grouped_descending(path_to_save: str, title: str,
+                                       ylabel: str, ydata: list,
+                                       xbins: list = None, yticks: list = None):
     template = pd.read_csv("data/lobes.node", " ", header='infer')
     indexes = template.index.tolist()
     data = dict()
@@ -279,7 +279,6 @@ def create_bar_lobe_grouped_descending(path_to_save: str, title: str,
     colors = list()
     for i in sorted_data.keys():
         colors.append((template.loc[[i]]['Color']).tolist()[0])
-
 
     rois = list()
     for i in sorted_data.keys():
@@ -307,10 +306,8 @@ def create_bar_lobe_grouped_descending(path_to_save: str, title: str,
     return
 
 
-def create_box_plot(arg):
-
+def create_box_plot_edges(arg):
     df = pd.read_csv("stats/EDGE-stats-fmri", sep='\t')
-
 
     rich_subset = df.loc[df['EdgeType'] == 'rich'][arg].to_list()
     periphery_subset = df.loc[df['EdgeType'] == 'periphery'][arg].to_list()
@@ -318,11 +315,26 @@ def create_box_plot(arg):
 
     data = [rich_subset, periphery_subset, feeder_subset]
 
-    plt.boxplot(data)
+    plt.boxplot(data, showfliers=False)
 
     plt.xlabel(['rich', 'periphery', 'feeder'])
 
     plt.show()
+
+def create_box_plot_nodes(arg, df, name):
+    rich_subset = df.loc[df['RichClub']==True][arg].to_list()
+    periphery_subset = df.loc[df['RichClub']==False][arg].to_list()
+
+    data = [rich_subset, periphery_subset]
+
+    plt.boxplot(data, showfliers=False)
+
+    plt.title(name)
+    plt.xlabel(['rich', 'periphery'])
+    plt.show()
+
+    #plt.savefig("reports/plots/ParticipationCoeff_RichClub/" + name)
+
 
 def create_communities_table(communities_per_algorithm, names):
     colors = None
@@ -331,7 +343,7 @@ def create_communities_table(communities_per_algorithm, names):
         norm = plt.Normalize(cols.min() - 1, cols.max() + 1)
         colors_new = plt.cm.cool(norm(cols))
         if colors is None:
-            colors  = colors_new
+            colors = colors_new
         else:
             colors = np.concatenate([colors, colors_new], 0)
         print(colors)
@@ -339,8 +351,8 @@ def create_communities_table(communities_per_algorithm, names):
     print(colors)
     fig = plt.figure(figsize=(5, 2))
     plt.axis('off')
-    plt.table(np.empty((5,68), str), rowLabels=names, colLabels=list(range(0,68)), loc='center',
-                  cellColours=colors, colWidths=[0.1] * 5)
+    plt.table(np.empty((5, 68), str), rowLabels=names, colLabels=list(range(0, 68)), loc='center',
+              cellColours=colors, colWidths=[0.1] * 5)
 
     plt.title("Communities per algorithm", fontsize=8)
 

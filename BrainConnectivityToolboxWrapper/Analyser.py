@@ -27,9 +27,14 @@ def analyze(graph, graph_binarized, name, show=False,
     if edge_betweenness:
         rich_club = True
 
+    if participation_coefficient:
+        rich_club = True
+
     if rich_club:
         #degree centrality is needed for the rich club
         degree_centrality = True
+
+
 
 
     # Select submatrix

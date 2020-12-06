@@ -49,6 +49,8 @@ class ParticipationCoefficient:
         self.stats['wMD'] = within_degrees
         self.stats['PC'] = participations
 
+        plots.create_box_plot_nodes('PC', self.stats, self.name)
+
 
         plots.create_plot_communitycolored("reports/plots/ParticipationCoeff/" + str(self.name) + '_' + str(self.communities_algorithm) + ".pdf",
                                            ('fMRI' if self.name=='fmri' else 'EEG-'+self.name),
