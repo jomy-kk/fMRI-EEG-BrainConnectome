@@ -61,8 +61,10 @@ def create_plot_communitycolored(path_to_save: str, title: str, xlabel: str, xda
                                  communities=None):
 
     fig = plt.figure()
-    fig.set_size_inches(14.0, 14.0)
+    fig.set_size_inches(6.0, 4.0)
     ax = plt.subplot(1, 1, 1)
+    ax.add_patch(plt.Rectangle(xy=(1, 0), width=2, height=0.4, color=np.array((0.8, 0.8, 0.8, 0.5)), fill=True, zorder=-100))
+    ax.add_patch(plt.Rectangle(xy=(1, 0.6), width=2, height=0.4, color=np.array((0.8, 0.8, 0.8, 0.5)), fill=True, zorder=-100))
 
     colors = ['#FF011D', '#FFB400', '#69BF23', '#00B3CE', '#2E36AD', '#fa007d', '#FF7F00']
 
@@ -72,13 +74,12 @@ def create_plot_communitycolored(path_to_save: str, title: str, xlabel: str, xda
     for i in range(1, max):
         communities = np.where(communities == str(i), colors[i], communities)
 
-    print(communities)
     plt.scatter(xdata, ydata, color=communities)
 
 
-    #plt.title(title + ' (linear scale)' if also_log_scale else '')
-    plt.xlabel(xlabel, fontsize=18)
-    plt.ylabel(ylabel, fontsize=18)
+    plt.title(title, fontsize=16)
+    plt.xlabel(xlabel, fontsize=16)
+    plt.ylabel(ylabel, fontsize=16)
     ax.set_xscale('linear')
     ax.set_yscale('linear')
     if yticks:
