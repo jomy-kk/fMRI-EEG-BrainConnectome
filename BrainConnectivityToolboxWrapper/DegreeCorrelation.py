@@ -15,11 +15,11 @@ class DegreeCorrelation:
         centrality_A = bct.degrees_und(self.gA)
         centrality_B = bct.degrees_und(self.gB)
 
-        plots.create_plot("reports/plots/" + self.nameA + '_' + self.nameB + "_degree_correlation.pdf",
-                          self.nameA + " Degree vs. " + self.nameB + " Degree",
-                          self.nameA + " Degree", centrality_A,
-                          self.nameB + " Degree", centrality_B,
-                          also_log_scale=False, yticks=[0, 45])
+        plots.create_plot_lobecolored("reports/plots/" + self.nameA + '_' + self.nameB + "_degree_correlation.pdf",
+                                      self.nameA + " Degree vs. " + self.nameB + " Degree",
+                                      self.nameA + " Degree", centrality_A,
+                                      self.nameB + " Degree", centrality_B,
+                                      also_log_scale=False, yticks=[0, 45])
 
         plt.show()
 
