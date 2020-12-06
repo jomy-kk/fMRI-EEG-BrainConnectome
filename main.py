@@ -7,9 +7,9 @@ from BrainConnectivityToolboxWrapper import DegreeCorrelation
 ##########################################
 
 input_file = "data/processed/matrices/static_adjacency_matrices.mat"
-#names = ['fmri', 'broad', 'delta', 'theta', 'alpha', 'beta', 'gamma']
+names = ['fmri', 'broad', 'delta', 'theta', 'alpha', 'beta', 'gamma']
 
-names = ['fmri']
+names = ['beta']
 
 matrixes = {name: io.loadmat(input_file).get(name) for name in names}
 
