@@ -11,6 +11,7 @@ from matplotlib import pyplot as plt
 ##########################################
 
 names = ['fmri', 'broad', 'delta', 'theta', 'alpha', 'beta', 'gamma']
+names = ['alpha']
 input_file = "data/processed/matrices/static_adjacency_matrices.mat"
 input_file_binarized = "data/processed/matrices/static_unweighted_adjacency_matrices.mat"
 
@@ -31,9 +32,10 @@ for n in matrixes:
             betweenness_centrality=False,
             newman_modularity=False,
             edge_betweenness=False,
-            rich_club=False,
-            participation_coefficient=True,
-            communities_algorithm='louvain'
+            rich_club=True,
+            participation_coefficient=False,
+            communities_algorithm='louvain',
+            desikan_metric='RichClubDegCoeff'
             )
 
 '''for n in matrixes:

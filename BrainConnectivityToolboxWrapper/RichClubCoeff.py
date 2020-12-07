@@ -37,14 +37,16 @@ class RichClubCoefficient:
         print(idxs)
 
         self.stats['RichClub'] = self.stats.apply(lambda row: True if row.Degree in idxs else False, axis=1)
+        self.stats['RichClubDegCoeff'] = self.stats.apply(lambda row: coeffs[int(row.Degree)-1] if row.Degree != 0 else 0, axis=1)
 
         min_deg = idxs[0]
+        max_deg = idxs[-1]
 
         degs = self.stats['Degree'].to_list()
 
         c = 0
         for d in degs:
-            if d >= min_deg:
+            if min_deg <= d <= max_deg:
                 c += 1
 
         print("Number of nodes in rich club: " + str(c))
