@@ -6,6 +6,8 @@ import pandas as pd
 def write_desikan(name_metric, name_matrix, metric):
     df = pd.read_csv("data/template.node", sep=' ', skiprows=1, names=['c1', 'c2', 'c3', 'lobo', 'metric', 'label'])
 
+    # df['lobo'] = metric
     df['metric'] = metric
 
-    df.to_csv("DesikanViz/files/desikan-" + name_matrix + "-" + name_metric+".node", sep=' ', index=False, header=False)
+    df.to_csv("DesikanViz/files/desikan-" + name_matrix + "-" + name_metric + ".node", sep=' ', index=False,
+              header=False)
