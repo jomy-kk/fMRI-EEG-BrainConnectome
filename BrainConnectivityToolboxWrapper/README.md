@@ -10,3 +10,10 @@ Metrics available:
 * Betweenness Centrality (Binarized)
 * Weighted Rich Club Coefficient
 * Rich Club Coefficient (Binarized)
+* Modularity for Community algorithms:
+    * Infomap (from cdlib)
+    * Walktrap (from cdlib)
+    * Spinglass (from cdlib)
+    * Girvan-Newman
+    * Louvain
+* Participation Coefficient
